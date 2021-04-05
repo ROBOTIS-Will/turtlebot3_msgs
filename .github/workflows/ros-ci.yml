@@ -1,69 +1,37 @@
-name: develop-ci
+# This config uses industrial_ci (https://github.com/ros-industrial/industrial_ci.git).
+# For troubleshooting, see readme (https://github.com/ros-industrial/industrial_ci/blob/master/README.rst)
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-on:
-  push:
-    branches: [ master, develop ]
-  pull_request:
-    branches: [ master, develop ]
+name: CI
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# This determines when this workflow is run
+on: [push, pull_request] # on all pushes and PRs
+
+# or more fine-grained
+# on:
+#   # When master or melodic-devel branch is pushed to
+#   push:
+#     branches: [ master, melodic-devel ]
+#   # When there is a pull request against master
+#   pull_request:
+#     branches: [ master ]
+
 jobs:
-  develop_ci:
-    runs-on: ubuntu-latest
-    env:
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+  industrial_ci:
     strategy:
-      fail-fast: false
+      matrix:
+        env:
+          - {ROS_DISTRO: noetic, ROS_REPO: testing}
+          - {ROS_DISTRO: noetic, ROS_REPO: main}
+    env:
+      CCACHE_DIR: /github/home/.ccache # Directory for ccache (and how we enable ccache in industrial_ci)
+    runs-on: ubuntu-latest
     steps:
-      - uses: ros-tooling/setup-ros@0.1.0
-      - name: install vcs
-        run: |
-          sudo apt install python3-vcstool python3-empy
-      - uses: ros-tooling/action-ros-ci@0.2.0
+      - uses: actions/checkout@v2
+      # This step will fetch/store the directory used by ccache before/after the ci run
+      - uses: actions/cache@v2
         with:
-          package-name: turtlebot3_msgs
-          target-ros1-distro: noetic
-          vcs-repo-file-url: ""
-  # ros1-ci:
-  #   runs-on: ubuntu-20.04
-  #   env:
-  #     ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-  #   strategy:
-  #     matrix:
-  #       ros_distribution:
-  #         - kinetic
-  #         # - melodic
-  #         # - noetic
-  #       include:
-  #         # Kinetic Kame (May 2016 - May 2021)
-  #         - docker_image: osrf/ros:kinetic-desktop
-  #           ros_distribution: kinetic
-  #           # Setting ros_version is helpful to customize the workflow
-  #           # depending on whether a ROS 1, or ROS 2 is being tested.
-  #           # See 'if: ros_version ==' below for an example.
-  #           ros_version: 1
-
-  #         # # Melodic Morenia (May 2018 - May 2023)
-  #         # - docker_image: osrf/ros:melodic-desktop
-  #         #   ros_distribution: melodic
-  #         #   ros_version: 1
-
-  #         # # Noetic Ninjemys (May 2020 - May 2025)
-  #         # - docker_image: ubuntu:focal
-  #         #   ros_distribution: noetic
-  #         #   ros_version: 1
-  #   container:
-  #     image: ${{ matrix.docker_image }}
-  #   steps:
-  #     # - name: setup ROS environment
-  #     #   uses: ros-tooling/setup-ros@0.0.20
-  #     #   with:
-  #     #     required-ros-distributions: ${{ matrix.ros_distribution }}
-  #     - name: build and test ROS1
-  #       if: ${{ matrix.ros_version == 1 }}
-  #       uses: ros-tooling/action-ros-ci@0.2.0
-  #       with:
-  #         package-name: turtlebot3_msgs
-  #         target-ros1-distro: ${{ matrix.ros_distribution }}
-  #         # vcs-repo-file-url: ""
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
+      # Run industrial_ci
+      - uses: 'ros-industrial/industrial_ci@master'
+        env: ${{ matrix.env }}
