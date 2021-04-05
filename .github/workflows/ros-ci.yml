@@ -22,6 +22,8 @@ jobs:
   #         vcs-repo-file-url: ""
   ros1-ci:
     runs-on: ubuntu-20.04
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     strategy:
       matrix:
         ros_distribution:
