@@ -19,7 +19,7 @@ jobs:
       - uses: ros-tooling/setup-ros@0.1.0
       - name: install vcs
         run: |
-          sudo apt install python3-vcstool
+          sudo apt install python3-vcstool python3-empy
       - uses: ros-tooling/action-ros-ci@0.2.0
         with:
           package-name: turtlebot3_msgs
