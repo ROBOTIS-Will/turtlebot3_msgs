@@ -32,7 +32,7 @@ jobs:
           # - noetic
         include:
           # Kinetic Kame (May 2016 - May 2021)
-          - docker_image: ubuntu:16.04
+          - docker_image: osrf:kinetic-desktop
             ros_distribution: kinetic
             # Setting ros_version is helpful to customize the workflow
             # depending on whether a ROS 1, or ROS 2 is being tested.
@@ -51,10 +51,10 @@ jobs:
     container:
       image: ${{ matrix.docker_image }}
     steps:
-      - name: setup ROS environment
-        uses: ros-tooling/setup-ros@0.0.20
-        with:
-          required-ros-distributions: ${{ matrix.ros_distribution }}
+      # - name: setup ROS environment
+      #   uses: ros-tooling/setup-ros@0.0.20
+      #   with:
+      #     required-ros-distributions: ${{ matrix.ros_distribution }}
       - name: build and test ROS1
         if: ${{ matrix.ros_version == 1 }}
         uses: ros-tooling/action-ros-ci@0.0.6
