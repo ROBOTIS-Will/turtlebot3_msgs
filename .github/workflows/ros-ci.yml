@@ -32,7 +32,7 @@ jobs:
           # - noetic
         include:
           # Kinetic Kame (May 2016 - May 2021)
-          - docker_image: osrf:kinetic-desktop
+          - docker_image: osrf/ros:kinetic-desktop
             ros_distribution: kinetic
             # Setting ros_version is helpful to customize the workflow
             # depending on whether a ROS 1, or ROS 2 is being tested.
