@@ -49,10 +49,10 @@ jobs:
     container:
       image: ${{ matrix.docker_image }}
     steps:
-      - name: setup env variable
-        id: lang
+      - name: Set the value
+        id: step_one
         run: |
-          echo "LANG::en_US.UTF-8" >> $name
+            echo "name=LANG::en_US.UTF-8" >> $GITHUB_ENV
       - name: setup ROS environment
         uses: ros-tooling/setup-ros@0.0.20
         with:
