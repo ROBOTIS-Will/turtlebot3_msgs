@@ -47,9 +47,13 @@ jobs:
           required-ros-distributions: ${{ matrix.ros_distribution }}
       - name: Build and Test
         uses: ros-tooling/action-ros-ci@v0.2
-        uses: ros-tooling/action-ros-lint@0.0.6
         with:
           package-name: turtlebot3_msgs
           target-ros2-distro: ${{ matrix.ros_distribution }}
           linter: ${{ matrix.linter }}
           vcs-repo-file-url: ""
+      - name: Ament Lint
+        uses: ros-tooling/action-ros-lint@0.0.6
+        with:
+          distribution: copyright, cppcheck, xmllint
+          package-name: turtlebot3_msgs
