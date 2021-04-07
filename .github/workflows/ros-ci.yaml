@@ -31,6 +31,7 @@ jobs:
           - docker_image: ubuntu:focal
             ros_distribution: rolling
             ros_version: 2
+        linter: [copyright, cppcheck, cpplint, uncrustify, pep8, pep257, xmllint]
     container:
       image: ${{ matrix.docker_image }}
     steps:
@@ -50,3 +51,10 @@ jobs:
           package-name: turtlebot3_msgs
           target-ros2-distro: ${{ matrix.ros_distribution }}
           vcs-repo-file-url: ""
+      - name: Ament Lint
+        uses: ros-tooling/action-ros-lint@0.0.6
+        with:
+          distribution: ${{ matrix.ros_distribution }}
+          linter: ${{ matrix.linter }}
+          package-name: |
+            turtlebot3_msgs
