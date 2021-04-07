@@ -17,7 +17,7 @@ jobs:
         ros_distribution:
           # - dashing
           # - foxy
-          - rolling
+          - galactic
         include:
             # Dashing Diademata (May 2019 - May 2021)
           # - docker_image: ubuntu:bionic
