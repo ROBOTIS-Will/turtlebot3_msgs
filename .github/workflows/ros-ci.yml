@@ -18,5 +18,5 @@ jobs:
       - uses: ros-tooling/action-ros-ci@v0.2
         with:
           package-name: turtlebot3_msgs
-          target-ros1-distro: foxy
+          target-ros1-distro: noetic
           vcs-repo-file-url: ""
